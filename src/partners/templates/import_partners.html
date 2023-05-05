@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+ <head>
+	<meta charset="utf-8">
+	<title>Upload a file</title>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		$(document).ready(function() {
+			$('form').submit(function(event) {
+				event.preventDefault();
+
+				var file = $('input[type="file"]').get(0).files[0];
+				var formData = new FormData();
+				formData.append('data', file);
+
+				$.ajax({
+					url: '/api/import-partners/',
+					type: 'POST',
+					data: formData,
+					processData: false,
+					contentType: false,
+					success: function(data) {
+						alert('File uploaded successfully!');
+					},
+					error: function(xhr, status, error) {
+						alert('Error uploading file: ' + error);
+					}
+				});
+			});
+		});
+	</script>
+</head> 
+<body>
+	<form method="post" enctype="multipart/form-data">
+		{% csrf_token %}
+		<input type="file" name="file">
+		<button type="submit">Upload</button>
+	</form>
+</body>
+</html>
