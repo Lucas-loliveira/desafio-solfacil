@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Partner(models.Model):
     cnpj = models.CharField(max_length=14, unique=True)
     name = models.CharField(max_length=100)
