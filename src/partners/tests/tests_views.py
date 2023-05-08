@@ -1,15 +1,17 @@
 import csv
 import io
+
 from django.conf import settings
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework.test import APITransactionTestCase
-from .conftest import DATA_EXAMPLE
+
 from partners.models import Partner
+
+from .conftest import DATA_EXAMPLE
 
 
 class PartnerTestCase(APITransactionTestCase):
-
     def setUp(self):
         self.url = reverse("import-partners-list")
         data = DATA_EXAMPLE
@@ -22,7 +24,7 @@ class PartnerTestCase(APITransactionTestCase):
         csv_string.seek(0)
 
         self.csv_file = io.StringIO(csv_string.read())
-        self.csv_file.name = 'test.csv'
+        self.csv_file.name = "test.csv"
 
     def test_import_partner(self):
         response = self.client.post(self.url, {"data": self.csv_file})
@@ -34,10 +36,10 @@ class PartnerTestCase(APITransactionTestCase):
         self.assertEqual(len(response_json["errors"]), 4)
 
     def test_import_partner_wrong_file_type(self):
-        self.csv_file.name = 'test.txt'
+        self.csv_file.name = "test.txt"
         response = self.client.post(self.url, {"data": self.csv_file})
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json()["data"][0],'File extension “txt” is not allowed. Allowed extensions are: csv.')
-    
-
-        
+        self.assertEqual(
+            response.json()["data"][0],
+            "File extension “txt” is not allowed. Allowed extensions are: csv.",
+        )

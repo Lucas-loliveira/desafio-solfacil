@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import include, path
 from rest_framework import routers
+
 from partners.views import ImportPartnerViewSet, PartnerViewSet, upload_file
 
 router = routers.DefaultRouter()

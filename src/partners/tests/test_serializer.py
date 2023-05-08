@@ -1,14 +1,14 @@
-
 import csv
 import io
-from .conftest import DATA_EXAMPLE
 from unittest.mock import patch
-from partners.models import Partner
-from partners.serializers import PartnerSerializer
 
 from django.test import TestCase
 from rest_framework.test import APIClient
 
+from partners.models import Partner
+from partners.serializers import PartnerSerializer
+
+from .conftest import DATA_EXAMPLE
 
 
 class PartnerSerializerTestCase(TestCase):
@@ -39,9 +39,7 @@ class PartnerSerializerTestCase(TestCase):
     def test_invalid_partner_serializer(self):
         serializer = PartnerSerializer(data=self.invalid_data)
         self.assertFalse(serializer.is_valid())
-        self.assertEqual(
-            serializer.errors, {"cnpj": ["Invalid cnpj"]}
-        )
+        self.assertEqual(serializer.errors, {"cnpj": ["Invalid cnpj"]})
 
     def test_create_partner(self):
         serializer = PartnerSerializer(data=self.valid_data)

@@ -1,24 +1,32 @@
+import csv
+from typing import Dict, List, Tuple
+
+from django.core.validators import FileExtensionValidator
 from rest_framework import serializers
+
 from .models import Partner
 from .services.utils import check_cnpj
-from django.core.validators import FileExtensionValidator
-import csv
 
 
 class PartnerSerializer(serializers.ModelSerializer):
-    cnpj = serializers.CharField(validators=[])
+    cnpj: serializers.CharField = serializers.CharField(validators=[])
 
     class Meta:
         model = Partner
-        fields = "__all__"
+        fields: str = "__all__"
 
-    def validate_cnpj(serlf, value):
+    def validate_cnpj(self, value: str) -> str:
         value = "".join(filter(str.isdigit, value))
         if not check_cnpj(value):
             raise serializers.ValidationError("Invalid cnpj")
         return value
 
-    def create(self, validated_data):
+    def validade_zip_code(self, value: str) -> str:
+        value = "".join(filter(str.isdigit, value))
+        if not value:
+            return value
+
+    def create(self, validated_data: Dict) -> Tuple[Partner, bool]:
         cnpj = validated_data.get("cnpj")
         partner, created = Partner.objects.update_or_create(
             cnpj=cnpj, defaults=validated_data
@@ -27,11 +35,14 @@ class PartnerSerializer(serializers.ModelSerializer):
 
 
 class ImportPartnerSerializer(serializers.Serializer):
-    data = serializers.FileField(allow_empty_file=False, validators=[
-                                FileExtensionValidator(allowed_extensions=['csv']),
-                            ])
+    data: serializers.FileField = serializers.FileField(
+        allow_empty_file=False,
+        validators=[
+            FileExtensionValidator(allowed_extensions=["csv"]),
+        ],
+    )
 
-    def create(self, validated_data):
+    def create(self, validated_data: Dict) -> Dict[str, List[Dict]]:
         csv_file = validated_data["data"]
         decoded_file = csv_file.read().decode("utf-8").splitlines()
         decoded_file[0] = self.columns_name_to_snake_case(decoded_file[0])
@@ -46,26 +57,22 @@ class ImportPartnerSerializer(serializers.Serializer):
             if serializer.is_valid():
                 instance, created = serializer.save()
                 if created:
-                    created_list.append({"id":instance.id, "cnpj":instance.cnpj})
+                    created_list.append({"id": instance.id, "cnpj": instance.cnpj})
                 else:
-                    updated_list.append({"id":instance.id, "cnpj":instance.cnpj})
+                    updated_list.append({"id": instance.id, "cnpj": instance.cnpj})
             else:
                 error_list.append({**data, "errors": serializer.errors})
 
-        return {
-            "created": created_list,
-            "updated": updated_list,
-            "errors": error_list
-        }
+        return {"created": created_list, "updated": updated_list, "errors": error_list}
 
-    def columns_name_to_snake_case(self, columns):
+    def columns_name_to_snake_case(self, columns: str) -> str:
         column = columns.strip()
         words = column.split(",")
         snake_case = ",".join(word.strip().lower().replace(" ", "_") for word in words)
 
         return snake_case
 
-    def row_to_model_alias(self, row):
+    def row_to_model_alias(self, row: Dict) -> Dict[str, str]:
         cnpj = "".join(filter(str.isdigit, row.get("cnpj", None)))
         return {
             "cnpj": cnpj,

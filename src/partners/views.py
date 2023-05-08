@@ -1,9 +1,12 @@
-from rest_framework import viewsets, parsers
+from typing import Any, Dict
+
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import render
+from rest_framework import parsers, status, viewsets
+from rest_framework.response import Response
+
 from .models import Partner
 from .serializers import ImportPartnerSerializer, PartnerSerializer
-from django.shortcuts import render
-from rest_framework import status
-from rest_framework.response import Response
 
 
 class ImportPartnerViewSet(viewsets.ModelViewSet):
@@ -11,12 +14,12 @@ class ImportPartnerViewSet(viewsets.ModelViewSet):
     serializer_class = ImportPartnerSerializer
     parser_classes = (parsers.MultiPartParser,)
 
-    def create(self, request, *args, **kwargs):
+    def create(self, request: HttpRequest, *args: Any, **kwargs: Any) -> Response:
         file = request.data
         serializer = self.serializer_class(data=file)
-        if serializer.is_valid(): 
+        if serializer.is_valid():
             result = serializer.save()
-            return Response(data = result, status=status.HTTP_201_CREATED)
+            return Response(data=result, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
