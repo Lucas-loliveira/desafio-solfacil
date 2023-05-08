@@ -15,8 +15,8 @@ class ImportPartnerViewSet(viewsets.ModelViewSet):
         file = request.data
         serializer = self.serializer_class(data=file)
         if serializer.is_valid(): 
-            serializer.save()
-            return Response(status=status.HTTP_201_CREATED)
+            result = serializer.save()
+            return Response(data = result, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

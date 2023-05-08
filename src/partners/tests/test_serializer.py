@@ -4,10 +4,9 @@ import io
 from .conftest import DATA_EXAMPLE
 from unittest.mock import patch
 from partners.models import Partner
-from partners.serializers import PartnerSerializer, ImportPartnerSerializer
+from partners.serializers import PartnerSerializer
 
-from django.test import TestCase, override_settings
-from rest_framework.exceptions import ValidationError
+from django.test import TestCase
 from rest_framework.test import APIClient
 
 

@@ -37,12 +37,26 @@ class ImportPartnerSerializer(serializers.Serializer):
         decoded_file[0] = self.columns_name_to_snake_case(decoded_file[0])
         reader = csv.DictReader(decoded_file)
 
+        created_list = []
+        updated_list = []
+        error_list = []
         for row in reader:
             data = self.row_to_model_alias(row)
             serializer = PartnerSerializer(data=data)
             if serializer.is_valid():
-                instance, create = serializer.save()
-        return True
+                instance, created = serializer.save()
+                if created:
+                    created_list.append({"id":instance.id, "cnpj":instance.cnpj})
+                else:
+                    updated_list.append({"id":instance.id, "cnpj":instance.cnpj})
+            else:
+                error_list.append({**data, "errors": serializer.errors})
+
+        return {
+            "created": created_list,
+            "updated": updated_list,
+            "errors": error_list
+        }
 
     def columns_name_to_snake_case(self, columns):
         column = columns.strip()
