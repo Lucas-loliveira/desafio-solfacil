@@ -2,7 +2,9 @@ from rest_framework import viewsets, parsers
 from .models import Partner
 from .serializers import ImportPartnerSerializer, PartnerSerializer
 from django.shortcuts import render
-from django.http import JsonResponse
+from rest_framework import status
+from rest_framework.response import Response
+
 
 class ImportPartnerViewSet(viewsets.ModelViewSet):
     queryset = Partner.objects.all()
@@ -10,15 +12,12 @@ class ImportPartnerViewSet(viewsets.ModelViewSet):
     parser_classes = (parsers.MultiPartParser,)
 
     def create(self, request, *args, **kwargs):
-
         file = request.data
         serializer = self.serializer_class(data=file)
-        serializer.is_valid()
-        serializer.save()
-        
-        part = Partner.objects.all()
-        return JsonResponse({'status': 'success'})
-
+        if serializer.is_valid(): 
+            serializer.save()
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class PartnerViewSet(viewsets.ReadOnlyModelViewSet):
@@ -26,6 +25,5 @@ class PartnerViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Partner.objects.all()
 
 
-
 def upload_file(request):
-    return render(None, 'import_partners.html')
+    return render(None, "import_partners.html")
