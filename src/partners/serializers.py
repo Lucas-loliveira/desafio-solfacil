@@ -8,6 +8,7 @@ from .models import Partner
 from .services.utils import check_cnpj
 from .services.zipcode_client import ZipCodeApi
 
+
 class PartnerSerializer(serializers.ModelSerializer):
     cnpj: serializers.CharField = serializers.CharField(validators=[])
 
@@ -26,7 +27,7 @@ class PartnerSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data: Dict) -> Tuple[Partner, bool]:
-        if ( "zip_code" in validated_data):
+        if "zip_code" in validated_data:
             zip_code_api = ZipCodeApi()
             if address := zip_code_api.get_address(validated_data.get("zip_code")):
                 validated_data["city"] = address.get("localidade", None)

@@ -2,6 +2,7 @@ from typing import Any, Dict
 
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import parsers, status, viewsets
 from rest_framework.response import Response
 
@@ -9,11 +10,12 @@ from .models import Partner
 from .serializers import ImportPartnerSerializer, PartnerSerializer
 
 
-class ImportPartnerViewSet(viewsets.ModelViewSet):
+class ImportPartnerViewSet(viewsets.ViewSet):
     queryset = Partner.objects.all()
     serializer_class = ImportPartnerSerializer
     parser_classes = (parsers.MultiPartParser,)
 
+    @swagger_auto_schema(request_body=ImportPartnerSerializer)
     def create(self, request: HttpRequest, *args: Any, **kwargs: Any) -> Response:
         file = request.data
         serializer = self.serializer_class(data=file)

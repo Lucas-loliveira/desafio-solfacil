@@ -20,10 +20,10 @@
 					processData: false,
 					contentType: false,
 					success: function(data) {
-						alert('File uploaded successfully!');
+						$('#response').html('<pre style="color:green">' + JSON.stringify(data, null, 2) + '</pre>');
 					},
 					error: function(xhr, status, error) {
-						alert('Error uploading file: ' + error);
+						$('#response').html('<pre style="color:red">Error uploading file: ' + JSON.stringify(xhr, undefined, 2)  + '</pre>');
 					}
 				});
 			});
@@ -36,5 +36,6 @@
 		<input type="file" name="file">
 		<button type="submit">Upload</button>
 	</form>
+	<div id="response"></div>
 </body>
 </html>

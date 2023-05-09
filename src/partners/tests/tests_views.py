@@ -1,10 +1,10 @@
 import csv
 import io
+from unittest.mock import patch
 
 from django.conf import settings
 from django.test import TestCase
 from django.urls import reverse
-from unittest.mock import patch
 from rest_framework.test import APITransactionTestCase
 
 from partners.models import Partner
@@ -27,12 +27,12 @@ class PartnerTestCase(APITransactionTestCase):
         self.csv_file = io.StringIO(csv_string.read())
         self.csv_file.name = "test.csv"
 
-    @patch('partners.serializers.ZipCodeApi.get_address')
+    @patch("partners.serializers.ZipCodeApi.get_address")
     def test_import_partner(self, mock_address):
         mock_address.return_value = {
-                "localidade": "São Paulo",
-                "uf": "SP",
-            }
+            "localidade": "São Paulo",
+            "uf": "SP",
+        }
         response = self.client.post(self.url, {"data": self.csv_file})
         response_json = response.json()
         self.assertEqual(response.status_code, 201)
