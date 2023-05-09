@@ -6,7 +6,7 @@ from rest_framework import serializers
 
 from .models import Partner
 from .services.utils import check_cnpj
-
+from .services.zipcode_client import ZipCodeApi
 
 class PartnerSerializer(serializers.ModelSerializer):
     cnpj: serializers.CharField = serializers.CharField(validators=[])
@@ -23,10 +23,15 @@ class PartnerSerializer(serializers.ModelSerializer):
 
     def validade_zip_code(self, value: str) -> str:
         value = "".join(filter(str.isdigit, value))
-        if not value:
-            return value
+        return value
 
     def create(self, validated_data: Dict) -> Tuple[Partner, bool]:
+        if ( "zip_code" in validated_data):
+            zip_code_api = ZipCodeApi()
+            if address := zip_code_api.get_address(validated_data.get("zip_code")):
+                validated_data["city"] = address.get("localidade", None)
+                validated_data["state"] = address.get("uf", None)
+
         cnpj = validated_data.get("cnpj")
         partner, created = Partner.objects.update_or_create(
             cnpj=cnpj, defaults=validated_data
