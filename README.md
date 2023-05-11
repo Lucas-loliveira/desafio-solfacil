@@ -55,7 +55,8 @@ Página HTML para upload de arquivos (local)
 
 Futuras melhorias
 =====
-  * preparar projeto para deploy, adicionando .env e guardando variaveis sensiveis. criar pipelines de CI/CD;
+  * Preparar projeto para deploy, adicionando .env e guardando variaveis sensiveis. criar pipelines de CI/CD;
+  * Paginação na listagem de parceiros;
   * Alterar a arquitetura de acordo com a necessidade. A aplicação atual é suficiente para o upload de arquivo pequenos (ainda é necessario realizar testes de carga da aplicação para explorar esses limites). Em um contexto de na qual forem necessarios o upload de arquivos de arquivos de grande porte, é necessario a alteracao na arquitetura da aplicação, uma sugestao é apresentada no artigo [Run Celery workers for compute-intensive tasks with AWS Batch](https://aws.amazon.com/pt/blogs/hpc/run-celery-workers-for-compute-intensive-tasks-with-aws-batch/)
 
 
