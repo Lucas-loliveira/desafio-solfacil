@@ -1,4 +1,4 @@
-DATA_EXAMPLE = [
+CSV_DATA_EXAMPLE = [
     {
         "CNPJ": "16.470.954/0001-06",
         "Razão Social": "Sol Eterno",
@@ -40,3 +40,24 @@ DATA_EXAMPLE = [
         " CEP": "12900-303",
     },
 ]
+
+
+VALID_CNPJ = "01360643000109"
+INVALID_CNPJ = "11111111111111"
+INVALID_DATA = {
+    "cnpj": INVALID_CNPJ,
+    "name": "Test Company",
+    "trade_name": "Test Co",
+    "phone": "1111111111",
+    "email": "test@test.com",
+    "zip_code": "11111-111",
+}
+
+VALID_DATA = {
+    "cnpj": VALID_CNPJ,
+    "name": "Test Company",
+    "trade_name": "Test Co",
+    "phone": "1111111111",
+    "email": "test@test.com",
+    "zip_code": "11111-111",
+}

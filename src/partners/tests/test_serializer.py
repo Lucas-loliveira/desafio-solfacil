@@ -8,27 +8,15 @@ from rest_framework.test import APIClient
 from partners.models import Partner
 from partners.serializers import PartnerSerializer
 
+from .conftest import INVALID_CNPJ, INVALID_DATA, VALID_CNPJ, VALID_DATA
+
 
 class PartnerSerializerTestCase(TestCase):
     def setUp(self):
-        self.valid_cnpj = "01360643000109"
-        self.invalid_cnpj = "11111111111111"
-        self.valid_data = {
-            "cnpj": self.valid_cnpj,
-            "name": "Test Company",
-            "trade_name": "Test Co",
-            "phone": "1111111111",
-            "email": "test@test.com",
-            "zip_code": "11111-111",
-        }
-        self.invalid_data = {
-            "cnpj": self.invalid_cnpj,
-            "name": "Test Company",
-            "trade_name": "Test Co",
-            "phone": "1111111111",
-            "email": "test@test.com",
-            "zip_code": "11111-111",
-        }
+        self.valid_cnpj = VALID_CNPJ
+        self.invalid_cnpj = INVALID_CNPJ
+        self.valid_data = VALID_DATA
+        self.invalid_data = INVALID_DATA
 
     def test_valid_partner_serializer(self):
         serializer = PartnerSerializer(data=self.valid_data)

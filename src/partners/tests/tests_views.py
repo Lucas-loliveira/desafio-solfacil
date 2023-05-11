@@ -9,13 +9,13 @@ from rest_framework.test import APITransactionTestCase
 
 from partners.models import Partner
 
-from .conftest import DATA_EXAMPLE
+from .conftest import CSV_DATA_EXAMPLE
 
 
 class PartnerTestCase(APITransactionTestCase):
     def setUp(self):
         self.url = reverse("import-partners-list")
-        data = DATA_EXAMPLE
+        data = CSV_DATA_EXAMPLE
 
         csv_string = io.StringIO()
         writer = csv.DictWriter(csv_string, fieldnames=data[0].keys())

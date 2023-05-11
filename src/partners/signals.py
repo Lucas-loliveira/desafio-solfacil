@@ -22,5 +22,9 @@ def send_welcome_email(
     sender: Any, instance: Partner, created: bool, **kwargs: Any
 ) -> None:
     if created:
-        email: str = instance.email
-        logger.info("Welcome email sent to %s", email)
+        send_email(instance.email, f"Welcome email sent to {instance.email}")
+
+
+def send_email(email: str, msg: str):
+    logger.info(msg)
+    return True
